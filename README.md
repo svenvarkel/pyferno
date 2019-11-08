@@ -32,3 +32,13 @@ Runs thru the list of tasks asynchronously by limiting the concurrency by using 
 Runs thru the dict of key,task asynchronously by limiting the concurrency b using a semaphore.
 Maps results back to the dictionary with same keys with all tasks fulfilled.
 It will fail if any task fails
+    
+    :param __tasks: Map (dict) with name:task pairs. Task is an async function
+    :param concurrency: Concurrency of running tasks, integer. Defaults to 10
+    :param progress: Progress bar message or boolean True to display default progress bar
+    :return: Returns dict with name:<finished task> pairs.
+
+
+# License
+
+This library is licensed with MIT license.
