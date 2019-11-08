@@ -18,11 +18,11 @@ class Promise(object):
     @staticmethod
     async def all(__tasks: list, concurrency: int = 10, progress: object = None) -> list:
         """
-        Runs thru the list of tasks asynchronously by limiting the concurrency b using a semaphore
-        :param __tasks:
-        :param concurrency:
-        :param progress:
-        :return:
+        Runs thru the list of tasks asynchronously by limiting the concurrency by using a semaphore
+        :param __tasks: List of tasks
+        :param concurrency: Concurrency of running tasks, integer. Defaults to 10
+        :param progress: Progress bar message or boolean True to display default progress bar
+        :return: Returns list with finished tasks (fulfilled promises)
         """
         try:
             semaphore = asyncio.Semaphore(concurrency)
@@ -54,10 +54,10 @@ class Promise(object):
         Runs thru the dict of key,task asynchronously by limiting the concurrency b using a semaphore.
         Maps results back to the dictionary with same keys with all tasks fulfilled.
         It will fail if any task fails
-        :param __tasks:
-        :param concurrency:
-        :param progress:
-        :return:
+        :param __tasks: Map (dict) with name:task pairs. Task is an async function
+        :param concurrency: Concurrency of running tasks, integer. Defaults to 10
+        :param progress: Progress bar message or boolean True to display default progress bar
+        :return: Returns dict with name:<finished task> pairs.
         """
         try:
             semaphore = asyncio.Semaphore(concurrency)
