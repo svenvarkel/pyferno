@@ -1,6 +1,6 @@
 # PyFerno - an async/promise library for Python 3 async inferno
 
-The idea of this library is to provide simple methods for working with async/await in Python.  
+The idea of this library is to provide simple methods for working with [async/await](https://docs.python.org/3/library/asyncio.html) in Python.  
  
 The history behind creating this library is my background from Node.js development. 
 Node.js has excellent support for async/await because of its event-based nature.
@@ -14,6 +14,75 @@ For those who haven't used Javascript promises - you can think of these as "meth
 some time in the future. But until then lets (a)wait for it. And it doesn't block/mess with others in the same time" :)
 
 Right now this library exports 2 methods for working with lists and dicts in an async way.
+
+# Usage
+
+## With list of tasks
+
+```
+from pyferno.promise import Promise
+
+async def async_worker_fn():
+    # do something asynchronously
+    return something
+    
+tasks = [
+    async_worker_fn(),
+    async_worker_fn(),
+    async_worker_fn()
+]
+out = await Promise.all(tasks, progress="A nice progressbar")
+print(out)
+```
+
+## With dict of tasks
+
+```
+from pyferno.promise import Promise
+
+async def async_worker_fn():
+    # do something asynchronously
+    return something
+    
+tasks = {
+    "task1": async_worker_fn(),
+    "task2": async_worker_fn(),
+    "task3": async_worker_fn()
+}
+out = await Promise.props(tasks, concurrency=2, progress="A nice progressbar")
+print(out)
+```
+
+## With a bit more asyncio context
+
+```
+import asyncio
+from pyferno.promise import Promise
+
+async def async_worker_fn():
+    # do something asynchronously
+    return something
+    
+# this function wraps the main logic into async method   
+async def main_async_wrapper():
+    tasks = [
+        async_worker_fn(),
+        async_worker_fn(),
+        async_worker_fn()
+    ]
+    out = await Promise.all(tasks, progress="A nice progressbar")
+    return out
+
+# note, this is "normal" synchronous function
+def main():
+    loop = asyncio.get_event_loop()
+    out = loop.run_until_complete(main_async_wrapper())
+    loop.close()
+    print(out)
+  
+if __name__ == "__main__":
+    main()  
+```
 
 # API
 
