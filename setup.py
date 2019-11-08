@@ -11,6 +11,10 @@ def read_requirements():
     return requirements
 
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+
 setup(
     name="pyferno",
     version=find_version(os.getcwd(), "pyferno/version.py"),
@@ -22,5 +26,12 @@ setup(
     packages=find_packages(),
     install_requires=read_requirements(),
     include_package_data=True,
-    zip_safe=False
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    python_requires='>=3.6',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
 )
