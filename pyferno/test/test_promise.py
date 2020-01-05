@@ -4,9 +4,9 @@ import random
 from pyferno.promise import Promise
 
 
-async def dummy_fn():
-    await asyncio.sleep(0.3)
-    return random.randint(1000, 9999)
+async def dummy_fn(i: int = None):
+    await asyncio.sleep(random.randint(0, 5))
+    return i
 
 
 @pytest.fixture(name="list_of_tasks")
@@ -23,7 +23,7 @@ def get_dict_of_tasks():
     dict_of_tasks = dict()
     for i in range(0, 10):
         key = f"key_{i}"
-        dict_of_tasks[key] = dummy_fn()
+        dict_of_tasks[key] = dummy_fn(i)
 
     return dict_of_tasks
 

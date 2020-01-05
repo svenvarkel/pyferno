@@ -64,26 +64,31 @@ class Promise(object):
             # re-schedule tasks
             re_tasks = list()
             keymap = list()
+            out = dict()
             for _key, _task in __props.items():
                 task = asyncio.ensure_future(Promise._internal_worker(semaphore, _task))
-                re_tasks.append(task)
-                keymap.append(_key)
+                # re_tasks.append(task)
+                # keymap.append(_key)
+                out[_key] = await task
 
-            if progress:
-                progress_message = progress if isinstance(progress, str) else "Promise.all"
-                results = [
-                    await res for res in
-                    tqdm(asyncio.as_completed(re_tasks),
-                         desc=progress_message,
-                         total=len(re_tasks))
-                ]
-            else:
-                results = [await res for res in asyncio.as_completed(re_tasks)]
+            # if progress:
+            #     progress_message = progress if isinstance(progress, str) else "Promise.props"
+            #     results = [
+            #         await res for res in
+            #         tqdm(asyncio.as_completed(re_tasks),
+            #              desc=progress_message,
+            #              total=len(re_tasks))
+            #     ]
+            # else:
+            #     # results = [await res for res in asyncio.as_completed(re_tasks)]
+            #     for k,v in __props.items():
+            #             out[k] = asyncio.as_completed(v)
+            # results = {await {k: res} for k,res in asyncio.as_completed(re_tasks)}
             # map results to output dictionary
-            out = dict()
-            for index, res in enumerate(results):
-                _key = keymap[index]
-                out[_key] = res
+            #
+            # for index, res in enumerate(results):
+            #     _key = keymap[index]
+            #     out[_key] = res
             return out
 
         except PromiseException as ex:
