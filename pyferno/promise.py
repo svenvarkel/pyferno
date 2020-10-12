@@ -49,7 +49,20 @@ class Promise(object):
             raise
 
     @staticmethod
-    async def props(__props: dict, concurrency: int = 10, progress: object = None) -> dict:
+    async def _internal_key_worker(semaphore, key, task, pbar=None):
+        """
+        This is internal worker that uses semaphore to control concurrency
+        :param semaphore:
+        :param task:
+        :return:
+        """
+        async with semaphore:
+            out = await task
+            pbar.update(1)
+            return key, out
+
+    @staticmethod
+    async def props(__props: dict, concurrency: int = 20, progress: object = None) -> dict:
         """
         Runs thru the dict of key,task asynchronously by limiting the concurrency b using a semaphore.
         Maps results back to the dictionary with same keys with all tasks fulfilled.
@@ -60,12 +73,18 @@ class Promise(object):
         :return: Returns dict with name:<finished task> pairs.
         """
         try:
-            semaphore = asyncio.Semaphore(concurrency)
-            out = dict()
-            for _key, _task in __props.items():
-                task = asyncio.ensure_future(Promise._internal_worker(semaphore, _task))
-                out[_key] = await task
-            return out
+            progress_message = ""
+            if progress:
+                progress_message = progress if isinstance(progress, str) else "Promise.all"
+            with tqdm(desc=progress_message) as pbar:
+                semaphore = asyncio.Semaphore(concurrency)
+                tasks = list()
+                for _key, _task in __props.items():
+                    task = Promise._internal_key_worker(semaphore, _key, _task, pbar)
+                    tasks.append(task)
+
+                out = {k: v for (k, v) in await asyncio.gather(*tasks)}
+                return out
 
         except PromiseException as ex:
             print(ex)
