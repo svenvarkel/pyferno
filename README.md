@@ -107,6 +107,12 @@ It will fail if any task fails
     :param progress: Progress bar message or boolean True to display default progress bar
     :return: Returns dict with name:<finished task> pairs.
 
+# Publishing package
+
+```
+python3 setup.py sdist bdist_wheel
+twine 
+```
 
 # License
 
