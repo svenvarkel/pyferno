@@ -10,11 +10,21 @@ async def dummy_fn(i: int = None):
     return out
 
 
+async def dummy_sleep(order: int):
+    sleep = random.randint(0, 5)
+    await asyncio.sleep(sleep)
+    out = {
+        "no": order,
+        "sleep": sleep
+    }
+    return out
+
+
 @pytest.fixture(name="list_of_tasks")
 def get_list_of_tasks():
     list_of_tasks = list()
     for i in range(0, 10):
-        list_of_tasks.append(dummy_fn())
+        list_of_tasks.append(dummy_sleep(i))
 
     return list_of_tasks
 
@@ -22,7 +32,7 @@ def get_list_of_tasks():
 @pytest.fixture(name="dict_of_tasks")
 def get_dict_of_tasks():
     dict_of_tasks = dict()
-    for i in range(0, 10000):
+    for i in range(0, 1000):
         key = f"key_{i}"
         dict_of_tasks[key] = dummy_fn(i)
 

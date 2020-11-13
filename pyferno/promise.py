@@ -5,7 +5,7 @@ from pyferno.exception import PromiseException
 
 class Promise(object):
     @staticmethod
-    async def _internal_worker(semaphore, task):
+    async def _internal_worker(semaphore, task, idx: int = None, pbar=None):
         """
         This is internal worker that uses semaphore to control concurrency
         :param semaphore:
@@ -13,10 +13,12 @@ class Promise(object):
         :return:
         """
         async with semaphore:
-            return await task
+            if pbar and callable(pbar.update):
+                pbar.update(1)
+            return idx, await task
 
     @staticmethod
-    async def all(__tasks: list, concurrency: int = 10, progress: object = None) -> list:
+    async def all(__tasks: list, concurrency: int = 20, progress: object = None) -> list:
         """
         Runs thru the list of tasks asynchronously by limiting the concurrency by using a semaphore
         :param __tasks: List of tasks
@@ -26,23 +28,21 @@ class Promise(object):
         """
         try:
             semaphore = asyncio.Semaphore(concurrency)
-            # re-schedule tasks
-            re_tasks = list()
-            for _task in __tasks:
-                task = asyncio.ensure_future(Promise._internal_worker(semaphore, _task))
-                re_tasks.append(task)
-
+            progress_message = ""
             if progress:
                 progress_message = progress if isinstance(progress, str) else "Promise.all"
-                results = [
-                    await res for res in
-                    tqdm(asyncio.as_completed(re_tasks),
-                         desc=progress_message,
-                         total=len(re_tasks))
-                ]
+                progress_disabled = False
             else:
-                results = [await res for res in asyncio.as_completed(re_tasks)]
-            return results
+                progress_disabled = True
+
+            with tqdm(desc=progress_message, disable=progress_disabled) as pbar:
+                tasks = list()
+                for _key, _task in enumerate(__tasks):
+                    task = Promise._internal_key_worker(semaphore, _key, _task, pbar)
+                    tasks.append(task)
+
+                out = [v for (k, v) in await asyncio.gather(*tasks)]
+                return out
 
         except PromiseException as ex:
             print(ex)
