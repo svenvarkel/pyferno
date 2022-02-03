@@ -75,8 +75,11 @@ class Promise(object):
         try:
             progress_message = ""
             if progress:
-                progress_message = progress if isinstance(progress, str) else "Promise.all"
-            with tqdm(desc=progress_message) as pbar:
+                progress_message = progress if isinstance(progress, str) else "Promise.props"
+                progress_disabled = False
+            else:
+                progress_disabled = True
+            with tqdm(desc=progress_message, disable=progress_disabled) as pbar:
                 semaphore = asyncio.Semaphore(concurrency)
                 tasks = list()
                 for _key, _task in __props.items():
