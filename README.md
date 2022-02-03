@@ -14,13 +14,16 @@ async/await because of its event-based nature.
 There's a really great Javascript Promise library [Bluebird](https://github.com/petkaantonov/bluebird). It's been used
 as source for inspiration.
 
-The name "Promise" is also brought over from Javascript world and it reflects pretty wall what async tasks are -
+The name "Promise" is also brought over from Javascript world, and it reflects pretty wall what async tasks are -
 promises that may or may not fulfill.
 
 For those who haven't used Javascript promises - you can think of these as "methods that may or may not finish its job
 some time in the future. But until then lets (a)wait for it. And it doesn't block/mess with others in the same time" :)
 
-Currently this library exports 2 methods for working with lists and dicts in an async way.
+Currently, this library exports 2 methods for working with lists and dicts in an async way:
+
+- Promise.all() for working with Lists of tasks
+- Promise.props() for working with Dicts of tasks
 
 # Usage
 
@@ -116,7 +119,7 @@ if __name__ == "__main__":
 
 ## Promise.all(_Promise__tasks: list, concurrency: int = 10, progress: object = None) -> list
 
-Runs thru the list of tasks asynchronously by limiting the concurrency by using a semaphore
+Runs through the list of tasks asynchronously by limiting the concurrency by using a semaphore
 
     :param __tasks: List of tasks
     :param concurrency: Concurrency of running tasks, integer. Defaults to 10
@@ -125,7 +128,7 @@ Runs thru the list of tasks asynchronously by limiting the concurrency by using 
 
 ## Promise.props(_Promise__props: dict, concurrency: int = 10, progress: object = None) -> dict
 
-Runs thru the dict of key,task asynchronously by limiting the concurrency b using a semaphore. Maps results back to the
+Runs through the dict of key,task asynchronously by limiting the concurrency b using a semaphore. Map results back to the
 dictionary with same keys with all tasks fulfilled. It will fail if any task fails
 
     :param __tasks: Dict with name:task pairs. Task is an async function
@@ -133,12 +136,6 @@ dictionary with same keys with all tasks fulfilled. It will fail if any task fai
     :param progress: Progress bar message or boolean True to display default progress bar
     :return: Returns dict with name:<finished task> pairs.
 
-# Publishing package
-
-```
-python3 setup.py sdist bdist_wheel
-twine 
-```
 
 # License
 
