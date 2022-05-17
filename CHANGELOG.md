@@ -4,4 +4,8 @@
 
 # 1.4.0
 
-- Migrated project to [Poetry](https://python-poetry.org/) build and package management 
+- Migrated project to [Poetry](https://python-poetry.org/) build and package management
+
+# 1.5.0
+
+- Added Promise.generate() method to return AsyncGenerator instead of List

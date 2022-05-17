@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
 # API
 
-## Promise.all(_Promise__tasks: list, concurrency: int = 10, progress: object = None) -> list
+## Promise.all(_Promise__tasks: list, concurrency: Optional[int] = 10, progress: Optional[AnyStr] = None) -> List
 
 Runs through the list of tasks asynchronously by limiting the concurrency by using a semaphore
 
@@ -126,15 +126,26 @@ Runs through the list of tasks asynchronously by limiting the concurrency by usi
     :param progress: Progress bar message or boolean True to display default progress bar
     :return: Returns list of finished tasks (fulfilled promises)
 
-## Promise.props(_Promise__props: dict, concurrency: int = 10, progress: object = None) -> dict
+## Promise.props(_Promise__props: dict, concurrency: Optional[int] = 10, progress: Optional[AnyStr] = None) -> Dict
 
 Runs through the dict of key,task asynchronously by limiting the concurrency b using a semaphore. Map results back to the
 dictionary with same keys with all tasks fulfilled. It will fail if any task fails
 
-    :param __tasks: Dict with name:task pairs. Task is an async function
+    :param __props: Dict with name:task pairs. Task is an async function
     :param concurrency: Concurrency of running tasks, integer. Defaults to 10
     :param progress: Progress bar message or boolean True to display default progress bar
     :return: Returns dict with name:<finished task> pairs.
+
+
+## Promise.generate(_Promise__tasks: list, concurrency: Optional[int] = 10, progress: Optional[AnyStr] = None) -> AsyncGenerator[List, None]
+
+Returns AsyncGenerator that runs through the list of tasks asynchronously by limiting the concurrency by using a semaphore
+and yields resolved "promises" (coroutines)
+
+    :param __tasks: List of tasks
+    :param concurrency: Concurrency of running tasks, integer. Defaults to 10
+    :param progress: Progress bar message or boolean True to display default progress bar
+    :return: AsyncGenerator
 
 
 # License
