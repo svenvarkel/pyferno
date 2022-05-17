@@ -1,3 +1,5 @@
+from typing import AsyncGenerator
+
 import pytest
 import asyncio
 import random
@@ -11,16 +13,13 @@ async def dummy_fn(i: int = None):
 
 
 async def dummy_sleep(order: int):
-    sleep = random.randint(0, 5)
+    sleep = random.randint(0, 2)
     await asyncio.sleep(sleep)
-    out = {
-        "no": order,
-        "sleep": sleep
-    }
+    out = {"no": order, "sleep": sleep}
     return out
 
 
-@pytest.fixture(name="list_of_tasks")
+@pytest.fixture(name="list_of_tasks", scope="function")
 def get_list_of_tasks():
     list_of_tasks = list()
     for i in range(0, 10):
@@ -29,7 +28,7 @@ def get_list_of_tasks():
     return list_of_tasks
 
 
-@pytest.fixture(name="dict_of_tasks")
+@pytest.fixture(name="dict_of_tasks", scope="function")
 def get_dict_of_tasks():
     dict_of_tasks = dict()
     for i in range(0, 1000):
@@ -66,3 +65,11 @@ async def test_dict_of_tasks(dict_of_tasks):
     assert isinstance(dict_of_tasks, dict)
     out = await Promise.props(dict_of_tasks)
     assert isinstance(out, dict)
+
+
+@pytest.mark.asyncio
+async def test_generation(list_of_tasks):
+    generator = Promise.generate(list_of_tasks, progress=False)
+    assert isinstance(generator, AsyncGenerator)
+    async for item in generator:
+        assert item
