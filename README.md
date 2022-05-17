@@ -24,6 +24,7 @@ Currently, this library exports 2 methods for working with lists and dicts in an
 
 - Promise.all() for working with Lists of tasks
 - Promise.props() for working with Dicts of tasks
+- Promise.generate() for working with List of tasks but that returns an AsyncGenerator
 
 # Usage
 
