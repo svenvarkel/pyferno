@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyferno"
-version = "1.5.0"
+version = "1.5.1"
 description = "PyFerno - the async/promise library for running Python 3 async tasks"
 authors = ["Sven Varkel <sven@prototypely.com>"]
 license = "MIT"
